@@ -1,0 +1,29 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Fortran (artefactos)
+*.o
+*.obj
+*.mod
+*.MOD
+*.smod
+*.out
+*.exe
+*.a
+*.so
+*.dll
+build/
+cmake-build-*/
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# Salidas generadas (NO subir)
+results/
+*.bin
