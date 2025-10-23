@@ -85,7 +85,8 @@ cmake-build-*/
 # =========================================
 # 💾 SALIDAS / DATOS / RESULTADOS
 # =========================================
-results/
+Copias_vectores_graficas/
+resulados/
 data/
 datasets/
 *.bin
