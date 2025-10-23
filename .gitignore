@@ -1,8 +1,74 @@
-# Sistema
+# =========================================
+# 🧠 GENERAL / SISTEMA
+# =========================================
 .DS_Store
 Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+*~
 
-# Fortran (artefactos)
+# =========================================
+# 🐍 PYTHON / JUPYTER
+# =========================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+.conda/
+condaenv.*
+pip-wheel-metadata/
+*.egg-info/
+*.egg
+.eggs/
+
+# Checkpoints de Jupyter
+.ipynb_checkpoints/
+
+# Cachés y pruebas
+.mypy_cache/
+.pyre/
+.pytype/
+.pytest_cache/
+.tox/
+.nox/
+.hypothesis/
+.coverage
+coverage.xml
+
+# Configuración de herramientas
+.vscode/
+.idea/
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de entorno o secretos
+.env
+.env.*
+.secrets/
+*.key
+*.pem
+
+# Dependencias / builds
+build/
+dist/
+develop-eggs/
+.eggs/
+*.egg-info/
+.installed.cfg
+Pipfile.lock
+poetry.lock
+
+# =========================================
+# ⚙️ FORTRAN / COMPILACIÓN
+# =========================================
 *.o
 *.obj
 *.mod
@@ -13,17 +79,25 @@ Thumbs.db
 *.a
 *.so
 *.dll
-build/
+*.dylib
 cmake-build-*/
 
-# Python / Jupyter
-__pycache__/
-*.pyc
-.ipynb_checkpoints/
-.venv/
-venv/
-.env
-
-# Salidas generadas (NO subir)
+# =========================================
+# 💾 SALIDAS / DATOS / RESULTADOS
+# =========================================
 results/
+data/
+datasets/
 *.bin
+*.csv
+*.tsv
+*.hdf5
+*.npz
+*.npy
+*.pkl
+*.mat
+
+# =========================================
+# 📚 DOCUMENTACIÓN
+# =========================================
+docs/_build/
