@@ -168,7 +168,7 @@ program crea_red
 
       ! Abrir archivo para escritura (sobrescribe si ya existe)
       unit=10 !Canal de I/O para comunicarse con el archivo
-      open(unit=unit, file="resultados.txt", status="replace", action="write")
+      open(unit=unit, file="../resultados/crea_red/resultados.txt", status="replace", action="write")
 
       ! Escribir cabecera
       write(10,*) "Resultados de la simulación"
@@ -193,7 +193,7 @@ program crea_red
       print*, 'Datos guardados en fichero: resultados.txt'
 
 
-      open(unit=12, file="vectores.bin", status="replace", action="write", form="unformatted", access="stream") !form="unformatted" quiere decir que guarde los archivos en binario directamente, formated seria en texto ascii por ejemplo. access="stream" hace que los guarde todos seguidos sin meter nada de info extra
+      open(unit=12, file="../resultados/crea_red/vectores.bin", status="replace", action="write", form="unformatted", access="stream") !form="unformatted" quiere decir que guarde los archivos en binario directamente, formated seria en texto ascii por ejemplo. access="stream" hace que los guarde todos seguidos sin meter nada de info extra
       
       ! Escribir vectores en binario
       write(12) rx, ry, rz, vx, vy, vz, ax, ay, az
@@ -202,7 +202,7 @@ program crea_red
       print*, 'Vectores r,v,a guardados en fichero: vectores.bin'
 
 
-      open(unit=15, file="datta.txt", status="replace", action="write")
+      open(unit=15, file="../resultados/crea_red/datta.txt", status="replace", action="write")
         write(15,*) npmax,pl,pli,rc,rc2
         write(15,* ) vol,dens,ktotal,kpaso,dt
         write(15,*) 
