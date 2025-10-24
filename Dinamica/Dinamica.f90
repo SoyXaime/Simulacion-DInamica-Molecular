@@ -17,7 +17,7 @@ program dinamica
         real (kind=doblep) :: Pdm=0.d0, Pcorr=0.d0, dPLR=0.d0, F2_inst=0.d0
         real (kind=doblep) :: xnp, factor,px,py,pz,p2
         real (kind=doblep) :: rx(npmax),ry(npmax),rz(npmax),vx(npmax),vy(npmax),vz(npmax),ax(npmax),ay(npmax),az(npmax)
-        integer (kind=entero) :: kk, kcuenta, np
+        integer (kind=entero) :: kk=1, kcuenta, np
 
         
 
@@ -71,17 +71,13 @@ program dinamica
         corr_sum_rvp=16.d00*factor*(-2.d00/(3.d00*rc**6)+1.d00)
         corr_sum_r2vp=16.d00*factor*(26.d00/(3.d00*rc**6)-7.d00)
 
-                !Calculo momento
+        !Calculo momento
         px=sum(vx)
         py=sum(vy)
         pz=sum(vz)
-        !Corrijo momento
-        px=px/xnp
-        py=py/xnp
-        pz=pz/xnp
         p2=px*px+py*py+pz*pz
         print*, "**************************************************"
-        print*, "DATOS RELEVANTES SOBRE LA SIMULACION"
+        print*, "DATOS RELEVANTES SOBRE LA SIMULACION AL INICIO"
         print*, "**************************************************"
         print*, 'p2=', p2 !Comprobación de errores
 
@@ -91,6 +87,9 @@ program dinamica
         Ep=Ep+corr_ener !Comprobación de errores
         print*, 'E=Ep+Ec=',Ep,'+',Ec,'=', Ep+Ec
         print*,"**************************************************"
+        kcuenta=0
+        ktotal=500000
+        kpaso=100
         print*, "kk       kcuenta     ktotal       kpaso        dt         tiempo"
         print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
         print*,"**************************************************"
@@ -102,10 +101,7 @@ program dinamica
         !Provisional
         !write(*,*) 'Introduzca el tiempo en el termino la anterior simulacion. Si es la primera simulacion introduzca 0.d00'
         !read(*,*) tiempo
-  
-        kcuenta=0
-        ktotal=500000
-        kpaso=100
+
 
 
         open(10, file=trim(carpeta)//'/'//trim(gname2), position='append', action='write', status='unknown')
@@ -163,4 +159,26 @@ program dinamica
 
             !!!Luego la equilibracion son 500mil pasos grabando cada 100
 
+
+        print*, "**************************************************"
+        print*, "DATOS RELEVANTES SOBRE LA SIMULACION AL FINAL"
+        print*, "**************************************************"
+        px=sum(vx)
+        py=sum(vy)
+        pz=sum(vz)
+        !Corrijo momento
+        p2=px*px+py*py+pz*pz
+
+        print*, 'p2=', p2 !Comprobación de errores
+
+        Ep=Ep+corr_ener !Comprobación de errores
+        print*, 'E=Ep+Ec=',Ep,'+',Ec,'=', Ep+Ec
+        print*,"**************************************************"
+        print*, "kk       kcuenta     ktotal       kpaso        dt         tiempo"
+        print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
+        print*,"**************************************************"
+
+
     end program dinamica !!!!Ver Funcion H en el libro y calcularla y ver que sucede
+
+
