@@ -1,0 +1,10 @@
+gfortran Def_prec.f90 variables_comunes.f90 mod_funciones.f90 mod_subrutinas.f90 crea_red.f90 -o crea_red
+./crea_red
+
+
+gfortran Def_prec.f90 variables_comunes.f90 mod_subrutinas.f90 mod_funciones.f90 Equilibrio.f90 -o equilibrio
+./equilibrio    
+
+
+gfortran -O3 -fopenmp *.f90 -o condiciones_eq_omp    
+OMP_NUM_THREADS=3 ./condiciones_eq_omp     

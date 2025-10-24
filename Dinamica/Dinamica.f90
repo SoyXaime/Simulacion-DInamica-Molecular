@@ -80,12 +80,12 @@ program dinamica
         !read(*,*) tiempo
   
         kcuenta=0
-        ktotal=500000
+        ktotal=50000
         kpaso=100
 
         print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
         open(10, file=trim(gname2), position='append', action='write', status='unknown')
-        write(10,'(A)') '# t   Ec   Ep   E_tot   W   T   P_md   P_corr   F2'
+        write(10,'(A)') ' t   Ec   Ep   E_tot   W   T   P_md   P_corr   F2'
         open(11, file='velocidad_x.txt',position='append', action='write', status='unknown')
         open(12, file='velocidad_y.txt',position='append', action='write', status='unknown') 
         open(13, file='velocidad_z.txt',position='append', action='write', status='unknown')  
@@ -127,7 +127,7 @@ program dinamica
 9001    format (1pe13.6,8(2x,e13.6))
 
         !grabo vectores rva de ultima iteracion
-        open(20,file=gname1,form='unformatted',access='stream')
+        open(20,file=trim(gname1),form='unformatted',access='stream')
             write(20) rx,ry,rz,vx,vy,vz,ax,ay,az
         close(20)
 
