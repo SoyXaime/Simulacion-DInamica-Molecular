@@ -13,7 +13,7 @@ contains
         real(kind=doblep), intent(in)            :: pl
         real(kind=doblep), intent(out) :: Ep
         real(kind=doblep), intent(in) :: rc
-        real(kind=doblep), intent(out) :: W
+        real(kind=doblep), intent(inout) :: W
 
 
         ! --- Locales
