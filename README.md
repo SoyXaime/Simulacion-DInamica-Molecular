@@ -14,10 +14,9 @@ Se incluyen herramientas para:
 
 El potencial Lennard-Jones viene dado por:
 
-$$
-U(r) = 4\varepsilon \left[ \left( \frac{\sigma}{r} \right)^{12}
-- \left( \frac{\sigma}{r} \right)^6 \right]
-$$
+
+$$U(r) = 4\varepsilon \left[ \left( \frac{\sigma}{r} \right)^{12} - \left( \frac{\sigma}{r}\right)^6 \right]$$
+
 
 Este describe:
 - Repulsión fuerte a cortas distancias  
