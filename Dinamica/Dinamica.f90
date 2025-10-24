@@ -10,7 +10,9 @@ program dinamica
         character(len=25)  :: gname1
         character(len=25) :: gname2
 
-        real (kind=doblep) :: Ep=0.d00,Ec=0.d00,E_total=0.d00,tiempo=0.d00,W,T_inst=0.d0, V=0.d0, Pmd=0.d0, Pcorr=0.d0, dPLR=0.d0, F2_inst=0.d0
+        real (kind=doblep) :: Ep=0.d00,Ec=0.d00,E_total=0.d00,tiempo=0.d00
+        real (kind=doblep) :: W,T_inst=0.d0
+        real (kind=doblep) :: Pdm=0.d0, Pcorr=0.d0, dPLR=0.d0, F2_inst=0.d0
         real (kind=doblep) :: xnp, factor,px,py,pz,p2
         real (kind=doblep) :: rx(npmax),ry(npmax),rz(npmax),vx(npmax),vy(npmax),vz(npmax),ax(npmax),ay(npmax),az(npmax)
         integer (kind=entero) :: kk, kcuenta, np
@@ -101,7 +103,7 @@ program dinamica
                 Pcorr  = Pdm + dPLR
                 ! Mean squared force per particle (after forces are updated by verlet):
                 F2_inst = ( sum(ax*ax) + sum(ay*ay) + sum(az*az) ) / xnp
-                write(10,9001) tiempo, Ec, Ep, E_total, W, T_inst, Pmd, Pcorr, F2_inst !Escribo en ASCII para luego hacer gráficas con python
+                write(10,9001) tiempo, Ec, Ep, E_total, W, T_inst, Pdm, Pcorr, F2_inst !Escribo en ASCII para luego hacer gráficas con python
                 write(11,*) vx
                 write(12,*) vy
                 write(13,*) vz
