@@ -9,6 +9,8 @@ program dinamica
         character(len=25)  :: fname
         character(len=25)  :: gname1
         character(len=25) :: gname2
+        character(len=50) :: codigo
+        character(len=100) :: carpeta
 
         real (kind=doblep) :: Ep=0.d00,Ec=0.d00,E_total=0.d00,tiempo=0.d00
         real (kind=doblep) :: W,T_inst=0.d0
@@ -32,6 +34,20 @@ program dinamica
             read(10,9000) gname2 !Fichero donde grabo 1000 pasos de la simultacion
         close(10)
 
+        !Vamos a crear una carpeta especifica para guardar los datos
+        ! Pedir código
+        write(*,*) 'Introduce el código de la simulación, algo como: TiempoInicial-TiempoFinal'
+        read(*,'(A)') codigo
+
+        ! Construir el nombre de la carpeta
+         carpeta = '../resultados/dinamica/simulacion_' // trim(adjustl(codigo))
+
+        ! Crear la carpeta ¡¡¡¡IMPORTANTE!!!!! Compatible solo con sistemas UNIX como Linux/macOS
+        call system('mkdir -p ' // trim(carpeta))
+
+
+            ! Confirmar
+        write(*,*) '✅ Carpeta creada:', trim(carpeta)
 
 
         open(20, file=trim(gname1), form='unformatted', access='stream', status='old', action='read')
@@ -81,15 +97,15 @@ program dinamica
         !read(*,*) tiempo
   
         kcuenta=0
-        ktotal=500000
-        kpaso=100
+        ktotal=5000
+        kpaso=10
 
         print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
-        open(10, file='../resultados/dinamica/'//trim(gname2), position='append', action='write', status='unknown')
+        open(10, file=trim(carpeta)//'/'//trim(gname2), position='append', action='write', status='unknown')
         write(10,'(A)') ' t   Ec   Ep   E_tot   W   T   P_corr   F2'
-        open(11, file='../resultados/dinamica/velocidad_x.txt',position='append', action='write', status='unknown')
-        open(12, file='../resultados/dinamica/velocidad_y.txt',position='append', action='write', status='unknown') 
-        open(13, file='../resultados/dinamica/velocidad_z.txt',position='append', action='write', status='unknown')  
+        open(11, file=trim(carpeta)//'/velocidad_x.txt',position='append', action='write', status='unknown')
+        open(12, file=trim(carpeta)//'/velocidad_y.txt',position='append', action='write', status='unknown') 
+        open(13, file=trim(carpeta)//'/velocidad_z.txt',position='append', action='write', status='unknown')  
 
         do kk=1,ktotal
             !vamos a ver si grabo o no
@@ -130,6 +146,9 @@ program dinamica
             write(20) rx,ry,rz,vx,vy,vz,ax,ay,az
         close(20)
 
+        ! Copiar el archivo de vectores a la carpeta de la simulación
+        call system('cp ' // trim(gname1) // ' ' // trim(carpeta) // '/')
+        write(*,*) '📦 Archivo copiado a la carpeta:', trim(carpeta)
 
 
 
