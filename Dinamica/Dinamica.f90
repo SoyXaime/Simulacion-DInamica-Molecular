@@ -22,7 +22,7 @@ program dinamica
         
 
 
-
+        print*, "**************************************************"
         write(*,*) 'fichero datos simulacion'
         read(*,9000) fname
 9000    format (a25)
@@ -34,6 +34,7 @@ program dinamica
             read(10,9000) gname2 !Fichero donde grabo 1000 pasos de la simultacion
         close(10)
 
+        print*, "**************************************************"
         !Vamos a crear una carpeta especifica para guardar los datos
         ! Pedir código
         write(*,*) 'Introduce el código de la simulación, algo como: TiempoInicial-TiempoFinal'
@@ -48,7 +49,7 @@ program dinamica
 
             ! Confirmar
         write(*,*) '✅ Carpeta creada:', trim(carpeta)
-
+        print*, "**************************************************"
 
         open(20, file=trim(gname1), form='unformatted', access='stream', status='old', action='read')
             read(20) rx,ry,rz,vx,vy,vz,ax,ay,az
@@ -79,7 +80,9 @@ program dinamica
         py=py/xnp
         pz=pz/xnp
         p2=px*px+py*py+pz*pz
-
+        print*, "**************************************************"
+        print*, "DATOS RELEVANTES SOBRE LA SIMULACION"
+        print*, "**************************************************"
         print*, 'p2=', p2 !Comprobación de errores
 
         call potencial(rx,ry,rz,ax,ay,az,pl,Ep,rc,W)
@@ -87,6 +90,10 @@ program dinamica
 
         Ep=Ep+corr_ener !Comprobación de errores
         print*, 'E=Ep+Ec=',Ep,'+',Ec,'=', Ep+Ec
+        print*,"**************************************************"
+        print*, "kk       kcuenta     ktotal       kpaso        dt         tiempo"
+        print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
+        print*,"**************************************************"
 
         ! Long-range tail correction for truncated LJ (epsilon=sigma=1):
         dPLR   = (16.d00*pi/3.0d00) * (dens*dens) * ( 2.0d00/(3.0d00*rc**9) - 1.0d00/(rc**3) )
@@ -97,10 +104,10 @@ program dinamica
         !read(*,*) tiempo
   
         kcuenta=0
-        ktotal=5000
-        kpaso=10
+        ktotal=500000
+        kpaso=100
 
-        print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
+
         open(10, file=trim(carpeta)//'/'//trim(gname2), position='append', action='write', status='unknown')
         write(10,'(A)') ' t   Ec   Ep   E_tot   W   T   P_corr   F2'
         open(11, file=trim(carpeta)//'/velocidad_x.txt',position='append', action='write', status='unknown')
@@ -148,7 +155,7 @@ program dinamica
 
         ! Copiar el archivo de vectores a la carpeta de la simulación
         call system('cp ' // trim(gname1) // ' ' // trim(carpeta) // '/')
-        write(*,*) '📦 Archivo copiado a la carpeta:', trim(carpeta)
+        write(*,*) '📦 Archivo vectores.bin copiado a la carpeta:', trim(carpeta)
 
 
 
