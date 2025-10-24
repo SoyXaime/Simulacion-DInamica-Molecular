@@ -72,7 +72,8 @@ program dinamica
         Ep=Ep+corr_ener !Comprobación de errores
         print*, 'E=Ep+Ec=',Ep,'+',Ec,'=', Ep+Ec
 
-
+        ! Long-range tail correction for truncated LJ (epsilon=sigma=1):
+        dPLR   = (16.d00*pi/3.0d00) * (dens*dens) * ( 2.0d00/(3.0d00*rc**9) - 1.0d00/(rc**3) )
         !Comienza la dinamica
 
         !Provisional
@@ -80,15 +81,15 @@ program dinamica
         !read(*,*) tiempo
   
         kcuenta=0
-        ktotal=50000
+        ktotal=500000
         kpaso=100
 
         print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
-        open(10, file=trim(gname2), position='append', action='write', status='unknown')
-        write(10,'(A)') ' t   Ec   Ep   E_tot   W   T   P_md   P_corr   F2'
-        open(11, file='velocidad_x.txt',position='append', action='write', status='unknown')
-        open(12, file='velocidad_y.txt',position='append', action='write', status='unknown') 
-        open(13, file='velocidad_z.txt',position='append', action='write', status='unknown')  
+        open(10, file='../resultados/dinamica/'//trim(gname2), position='append', action='write', status='unknown')
+        write(10,'(A)') ' t   Ec   Ep   E_tot   W   T   P_corr   F2'
+        open(11, file='../resultados/dinamica/velocidad_x.txt',position='append', action='write', status='unknown')
+        open(12, file='../resultados/dinamica/velocidad_y.txt',position='append', action='write', status='unknown') 
+        open(13, file='../resultados/dinamica/velocidad_z.txt',position='append', action='write', status='unknown')  
 
         do kk=1,ktotal
             !vamos a ver si grabo o no
@@ -98,12 +99,10 @@ program dinamica
                 T_inst = 2.0_doblep*Ec/(3.0d0*xnp)
                 ! Virial pressure with your (plus) convention; change sign if your professor’s convention:
                 Pdm    = (xnp*T_inst)/vol + W/(3.0d0*vol)
-                ! Long-range tail correction for truncated LJ (epsilon=sigma=1):
-                dPLR   = (16.d00*pi/3.0d00) * (dens*dens) * ( 2.0d00/(3.0d00*rc**9) - 1.0d00/(rc**3) )
                 Pcorr  = Pdm + dPLR
                 ! Mean squared force per particle (after forces are updated by verlet):
                 F2_inst = ( sum(ax*ax) + sum(ay*ay) + sum(az*az) ) / xnp
-                write(10,9001) tiempo, Ec, Ep, E_total, W, T_inst, Pdm, Pcorr, F2_inst !Escribo en ASCII para luego hacer gráficas con python
+                write(10,9001) tiempo, Ec, Ep, E_total, W, T_inst, Pcorr, F2_inst !Escribo en ASCII para luego hacer gráficas con python
                 write(11,*) vx
                 write(12,*) vy
                 write(13,*) vz
