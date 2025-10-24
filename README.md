@@ -14,9 +14,10 @@ Se incluyen herramientas para:
 
 El potencial Lennard-Jones viene dado por:
 
-\[
-U(r) = 4 \varepsilon \left[ \left( \frac{\sigma}{r} \right)^{12} - \left( \frac{\sigma}{r} \right)^6 \right]
-\]
+$$
+U(r) = 4\varepsilon \left[ \left( \frac{\sigma}{r} \right)^{12}
+- \left( \frac{\sigma}{r} \right)^6 \right]
+$$
 
 Este describe:
 - Repulsión fuerte a cortas distancias  
@@ -42,15 +43,27 @@ Simulacion-DInamica-Molecular/
 ## ⚙️ Compilación y Ejecución
 
 ### 1) Compilar (con `gfortran`)
+		gfortran *.f90 -o crea_red
 
-...
+		gfortran *.f90 -o equilibrio
+
+		gfortran -O3 -fopenmp *.f90 -o condiciones_eq_omp 
+		
+		gfortran -O3 -fopenmp *.f90 -o dinamica 
+
 
 ### 2) Crear carpeta para resultados:
 		mkdir -p /resulados
 
 ### 3) Comandos de ejecución:
-		./crear_red/crear_red
-		...
+		./RED/crea_red
+
+		./Equilibrio/equilibrio
+
+		OMP_NUM_THREADS=3 ./???/condiciones_eq_omp 
+	
+		OMP_NUM_THREADS=3 ./Dinamica/dinamica 
+	
 
 📊 Análisis de resultados
 Ver notebooks
