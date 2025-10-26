@@ -15,6 +15,7 @@ program dinamica
         real (kind=doblep) :: Ep=0.d00,Ec=0.d00,E_total=0.d00,tiempo=0.d00
         real (kind=doblep) :: W,T_inst=0.d0
         real (kind=doblep) :: Pdm=0.d0, Pcorr=0.d0, dPLR=0.d0, F2_inst=0.d0
+        real (kind=doblep) :: df_v=0.d0, df_vv=0.d0   ! derivadas de U respecto al volumen (instante)
         real (kind=doblep) :: xnp, factor,px,py,pz,p2
         real (kind=doblep) :: rx(npmax),ry(npmax),rz(npmax),vx(npmax),vy(npmax),vz(npmax),ax(npmax),ay(npmax),az(npmax)
         integer (kind=entero) :: kk=1, kcuenta, np
@@ -58,7 +59,7 @@ program dinamica
         !print*, rx
 
         !Calculo valores necesarios
-        xnp=dble(npmax)
+        xnp=dble(np)
         !pli=1.d00/pli
         vol=pl*pl*pl
         dens = xnp/vol
@@ -88,8 +89,8 @@ program dinamica
         print*, 'E=Ep+Ec=',Ep,'+',Ec,'=', Ep+Ec
         print*,"**************************************************"
         kcuenta=0
-        ktotal=500000
-        kpaso=100
+        ktotal=50000
+        kpaso=10
         print*, "kk       kcuenta     ktotal       kpaso        dt         tiempo"
         print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
         print*,"**************************************************"
@@ -105,7 +106,7 @@ program dinamica
 
 
         open(10, file=trim(carpeta)//'/'//trim(gname2), position='append', action='write', status='unknown')
-        write(10,'(A)') ' t   Ec   Ep   E_tot   W   T   P_corr   F2'
+        write(10,'(A)') ' t   Ec   Ep   E_tot   W   T   P_corr   F2   phi_V   phi_VV'
         open(11, file=trim(carpeta)//'/velocidad_x.txt',position='append', action='write', status='unknown')
         open(12, file=trim(carpeta)//'/velocidad_y.txt',position='append', action='write', status='unknown') 
         open(13, file=trim(carpeta)//'/velocidad_z.txt',position='append', action='write', status='unknown')  
@@ -115,13 +116,23 @@ program dinamica
             if (mod(kk,kpaso)==0) then !Ej: si kpaso=100 entonces grabo cuando kk={100,200,300...}
                 kcuenta=kcuenta+1
                 tiempo=dble((kcuenta)*kpaso)*dt
+                ! Recalculo fuerzas y obtengo derivadas respecto al volumen (df_v, df_vv)
+                call potencial(rx,ry,rz,ax,ay,az,pl,Ep,rc,W, df_v, df_vv)
+                Ep=Ep+corr_ener
+                E_total=Ec+Ep
+
                 T_inst = 2.0_doblep*Ec/(3.0d0*xnp)
+
+                ! Correcciones de cola (LRC) para derivadas respecto al volumen
+                df_v  = df_v  + (1.0d0/(3.0d0*vol))       * corr_sum_rvp
+                df_vv = df_vv + (1.0d0/(9.0d0*vol*vol)) * (corr_sum_r2vp - 2.0d0*corr_sum_rvp)
+                
                 ! Virial pressure with your (plus) convention; change sign if your professor’s convention:
                 Pdm    = (xnp*T_inst)/vol + W/(3.0d0*vol)
                 Pcorr  = Pdm + dPLR
                 ! Mean squared force per particle (after forces are updated by verlet):
                 F2_inst = ( sum(ax*ax) + sum(ay*ay) + sum(az*az) ) / xnp
-                write(10,9001) tiempo, Ec, Ep, E_total, W, T_inst, Pcorr, F2_inst !Escribo en ASCII para luego hacer gráficas con python
+                write(10,9001) tiempo, Ec, Ep, E_total, W, T_inst, Pcorr, F2_inst, df_v, df_vv !Escribo en ASCII para luego hacer gráficas con python
                 write(11,*) vx
                 write(12,*) vy
                 write(13,*) vz
@@ -142,7 +153,7 @@ program dinamica
 
         write(*,*) 'Grabados', kcuenta, 'pasos' !Aviso de del fin de los calculos y avisa del numero de pasos grabados
 
-9001    format (1pe13.6,8(2x,e13.6))
+9001    format (1pe13.6,9(2x,e13.6))  ! 1 (tiempo) + 9 columnas extra = 10 valores
 
         !grabo vectores rva de ultima iteracion
         open(20,file=trim(gname1),form='unformatted',access='stream')
@@ -171,7 +182,7 @@ program dinamica
 
         print*, 'p2=', p2 !Comprobación de errores
 
-        Ep=Ep+corr_ener !Comprobación de errores
+        
         print*, 'E=Ep+Ec=',Ep,'+',Ec,'=', Ep+Ec
         print*,"**************************************************"
         print*, "kk       kcuenta     ktotal       kpaso        dt         tiempo"

@@ -2,7 +2,7 @@ module mod_subrutinas
     implicit none
     
 contains
-    subroutine potencial(rx, ry, rz, ax, ay, az, pl, Ep, rc, W)
+    subroutine potencial(rx, ry, rz, ax, ay, az, pl, Ep, rc, W, df_v, df_vv)
         use Def_prec
         ! use variables_comunes
         implicit none
@@ -14,6 +14,7 @@ contains
         real(kind=doblep), intent(out) :: Ep
         real(kind=doblep), intent(in) :: rc
         real(kind=doblep), intent(inout) :: W
+        real(kind=doblep), intent(out), optional :: df_v, df_vv  ! derivadas de φ respecto al volumen
 
 
         ! --- Locales
@@ -23,6 +24,7 @@ contains
         real(kind=doblep)    :: rc2
         real(kind=doblep)    :: fmod, fx, fy, fz
         real(kind=doblep)    :: W_local, w_ij
+        real(kind=doblep)    :: S2_local, s2_ij, V  ! acumulador de Σ r^2 v''(r), término por par y volumen
 
         real(kind=doblep), parameter :: sigma=1.0_doblep, epsilon=1.0_doblep
 
@@ -35,12 +37,13 @@ contains
         Ep_local=0.d00
         rc2 = rc*rc       ! precomputo de rc^2 para comparar con r2
         W_local = 0.d00
+        S2_local = 0.d00
 
 
     
     !$omp parallel do default(shared) &
-    !$omp& private(i,j,dx,dy,dz,r2,invr2,sr2,sr6,sr12,v_ij,fmod,fx,fy,fz,w_ij) &
-    !$omp& reduction(+:Ep_local, W_local) schedule(static)
+    !$omp& private(i,j,dx,dy,dz,r2,invr2,sr2,sr6,sr12,v_ij,fmod,fx,fy,fz,w_ij,s2_ij) &
+    !$omp& reduction(+:Ep_local, W_local, S2_local) schedule(static)
     do i = 1, n-1 ! do variable_de_inicio=valor_inicial, valor_final, incremento(opcional)
             do j = i+1, n
             ! Desplazamientos
@@ -61,10 +64,11 @@ contains
             sr2   = (sigma*sigma) * invr2 !sigma=1 lo dejo por si en un futuro me interesa meterlo por alguna razon
             sr6   = sr2*sr2*sr2
             sr12  = sr6*sr6
+            s2_ij = 24.0d0 * ( -7.0d0*sr6 + 26.0d0*sr12 )  ! r^2 v''(r) para LJ con σ=ε=1
             
-
             v_ij = 4.0_doblep * epsilon * (sr12 - sr6)!epsilon vale 1, lo meto por si en un futuro me interesa meterlo
             Ep_local  = Ep_local + v_ij
+            S2_local = S2_local + s2_ij
 
             ! Calculo fuerzas y aceleraciones
             fmod = 24.0d0*invr2*(2.0d0*sr6*sr6 - sr6)   ! escalar que multiplica r_ij
@@ -91,6 +95,13 @@ contains
 
         Ep = Ep_local
         W  = W_local
+        ! --- Derivadas de φ respecto al volumen (opcionales)
+        ! Fórmulas (promedios instantáneos):
+        !  ⟨∂φ/∂V⟩ = (1/(3V)) * Σ r_ij v'(r_ij) = -(1/(3V)) * W_local, ya que W = Σ r·F = -Σ r v'(r)
+        !  ⟨∂²φ/∂V²⟩ = (1/(9 V²)) * ( Σ r_ij² v''(r_ij) - 2 Σ r_ij v'(r_ij) ) = (1/(9 V²)) * ( S2_local + 2 W_local )
+        V = pl**3
+        if (present(df_v))  df_v  = - W_local / (3.0d0*V)
+        if (present(df_vv)) df_vv = ( S2_local + 2.0d0*W_local ) / (9.0d0*V*V)
         !if (present(epot_total)) epot_total = epot_local
         !print *, 'E_pot (LJ, total, PBC) = ', epot_local
     end subroutine

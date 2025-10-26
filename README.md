@@ -54,14 +54,14 @@ Simulacion-DInamica-Molecular/
 ### 2) Crear carpeta para resultados:
 		mkdir -p /resulados
 
-### 3) Comandos de ejecución:
-		./RED/crea_red
+### 3) Comandos de ejecución: (Ejecutar cada programa dentro de su carpeta)
+		./crea_red
 
-		./Equilibrio/equilibrio
+		./equilibrio
 
-		OMP_NUM_THREADS=3 ./???/condiciones_eq_omp 
+		OMP_NUM_THREADS=3 ./condiciones_eq_omp 
 	
-		OMP_NUM_THREADS=3 ./Dinamica/dinamica 
+		OMP_NUM_THREADS=3 ./dinamica 
 	
 
 📊 Análisis de resultados
