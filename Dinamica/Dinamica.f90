@@ -89,8 +89,8 @@ program dinamica
         print*, 'E=Ep+Ec=',Ep,'+',Ec,'=', Ep+Ec
         print*,"**************************************************"
         kcuenta=0
-        ktotal=50000
-        kpaso=10
+        ktotal=500000
+        kpaso=100
         print*, "kk       kcuenta     ktotal       kpaso        dt         tiempo"
         print*, kk,kcuenta,ktotal,kpaso,dt, tiempo !Comprobación de errores
         print*,"**************************************************"
